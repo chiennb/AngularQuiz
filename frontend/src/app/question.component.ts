@@ -1,10 +1,15 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-    selector: 'question',
-    templateUrl: './question.component.html'
-  })
+  selector: 'question',
+  templateUrl: './question.component.html'
+})
 
-  export class QuestionComponent {
-    title = 'app';
+export class QuestionComponent {
+  title = 'app';
+  question
+
+  post(question) {
+    console.log(question);
   }
+}

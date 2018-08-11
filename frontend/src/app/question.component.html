@@ -1,7 +1,12 @@
 <mat-card>
-    <form>
-        <mat-form-field>
-            <input matInput placeholder="Favorite food">
-        </mat-form-field>
-    </form>
+    <mat-card-content>
+        <form>
+            <mat-form-field>
+                <input [(ngModel)]="question" name="abc" matInput placeholder="Question">
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button (click)="post(question)">POST</button>
+    </mat-card-actions>
 </mat-card>
