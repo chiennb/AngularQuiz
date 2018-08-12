@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using quiz_backend.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace quiz_backend.Controllers
 {
     [Produces("application/json")]
@@ -22,18 +22,23 @@ namespace quiz_backend.Controllers
         [HttpGet]
         public IEnumerable<Question> Get()
         {
-            return new Question[]
-            {
-                new Question(){ Text = "Hello"},
-                new Question(){ Text = "Hi"}
-            };
+            return context.Questions;
         }
 
         [HttpPost]
-        public void Post([FromBody]Question question)
+        public async Task<IActionResult> Post([FromBody]Question question)
         {
             context.Questions.Add(question);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
+            return Ok(question);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody]Question question)
+        {
+            context.Entry(question).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return Ok(question);
         }
     }
 }

@@ -7,16 +7,19 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
+import {MatListModule} from '@angular/material/list';
 
 import {ApiService} from './api.service';
 
 import { AppComponent } from './app.component';
 import { QuestionComponent } from './question.component';
+import { QuestionsComponent } from './questions.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    QuestionComponent
+    QuestionComponent,
+    QuestionsComponent
   ],
   imports: [
     BrowserModule, 
@@ -26,7 +29,8 @@ import { QuestionComponent } from './question.component';
     BrowserAnimationsModule, 
     MatButtonModule, 
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    MatListModule
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]
