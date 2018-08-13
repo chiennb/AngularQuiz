@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
-import {QuestionComponent} from './question.component';
-import {QuestionsComponent} from './questions.component';
+import {QuizComponent} from './quiz.component';
+import {QuizzesComponent} from './quizzes.component';
 
 @Component({
-  template: '<question></question><questions></questions>'
+  template: '<quiz></quiz><quizzes></quizzes>'
 })
 export class HomeComponent {
 

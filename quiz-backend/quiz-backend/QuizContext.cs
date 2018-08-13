@@ -15,5 +15,7 @@ namespace quiz_backend
         }
 
         public DbSet<Question> Questions { get; set; }
+
+        public DbSet<quiz_backend.Models.Quiz> Quiz { get; set; }
     }
 }
