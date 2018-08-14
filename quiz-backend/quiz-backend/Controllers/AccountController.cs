@@ -40,17 +40,31 @@ namespace quiz_backend.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            return Ok(Credetials(user));
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            return Ok(CreateToken(user));
         }
 
-        private async Task<string> Credetials(IdentityUser user)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] Credentials credentials)
+        {
+            
+            var result = await _signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, false, false);
+
+            if (!result.Succeeded)
+                return BadRequest(result);
+
+            var user = await _userManager.FindByEmailAsync(credentials.Email);
+            return Ok(CreateToken(user));
+        }
+
+        private string CreateToken(IdentityUser user)
         {
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id)
             };
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
+            
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is the secret phrase"));
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
