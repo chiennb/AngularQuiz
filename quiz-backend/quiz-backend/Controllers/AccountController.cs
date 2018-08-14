@@ -2,53 +2,61 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-<<<<<<< HEAD
 using Microsoft.AspNetCore.Identity;
-=======
->>>>>>> 27be327f2460ac3890859853b58b2c6186f33945
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace quiz_backend.Controllers
 {
     public class Credentials
     {
-<<<<<<< HEAD
-        public string email { get; set; }
-=======
-        public string UserName { get; set; }
->>>>>>> 27be327f2460ac3890859853b58b2c6186f33945
+        public string Email { get; set; }
         public string Password { get; set; }
     }
     [Produces("application/json")]
     [Route("api/Account")]
     public class AccountController : Controller
     {
-<<<<<<< HEAD
-        readonly UserManager<IdentityUser> userManager;
-        readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            this._userManager = userManager;
+            this._signInManager = signInManager;
         }
+
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody]Credentials credentials)
+        public async Task<IActionResult> Register([FromBody] Credentials credentials)
         {
-            var user = new IdentityUser() { UserName = credentials.email, Email = credentials.email };
-            var result = await userManager.CreateAsync(user, credentials.Password);
+            var user = new IdentityUser { UserName = credentials.Email, Email = credentials.Email };
+
+            var result = await _userManager.CreateAsync(user, credentials.Password);
+
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-            await signInManager.SignInAsync(user, isPersistent: false);
-=======
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody]Credentials credentials)
+
+            return Ok(Credetials(user));
+        }
+
+        private async Task<string> Credetials(IdentityUser user)
         {
->>>>>>> 27be327f2460ac3890859853b58b2c6186f33945
-            var jwt = new JwtSecurityToken();
-            return Ok(new JwtSecurityTokenHandler().WriteToken(jwt));
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id)
+            };
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is the secret phrase"));
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(signingCredentials: signingCredentials, claims: claims);
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
 }
